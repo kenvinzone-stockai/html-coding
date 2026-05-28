@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenvinZone — HTML-CODE · 60 Design Tokens Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Alabaster (Alabaster Warm Neutral background, Emerald, Cyan, Rose Accents) -->
+    <!-- Application Structure Plan: 
+         - Bố cục: Bảng điều khiển (Dashboard) thiết kế tối giản tinh tế gồm 2 cột lớn: Sidebar phân tích dữ liệu bên trái, lưới danh sách 60 Tokens bên phải.
+         - Bộ nhận diện thương hiệu: Logo KenvinZone và tên miền html-code.kenvinzone.com được thiết kế góc trên tiêu đề.
+         - Cột Sidebar (Trái): Chứa giới thiệu mục tiêu ứng dụng, biểu đồ tròn Chart.js thống kê phân bổ 60 hiệu ứng theo phân loại, và cẩm nang hướng dẫn viết prompt Hyper Frame.
+         - Cột chính (Phải): Lưới 60 thẻ hoạt họa hiển thị đầy đủ thông tin chi tiết của từng Design Token kèm theo một hộp xem trước động tương tác thời gian thực (Live Preview Box) sử dụng CSS nguyên bản.
+    -->
+    <!-- Visualization & Content Choices: 
+         - Báo cáo gốc: Bảng dữ liệu mở rộng hoàn chỉnh gồm 60 thuật ngữ hoạt họa CSS cao cấp chuyên dụng cho các công cụ đồ họa động và Hyper Frame.
+         - Goal: Hệ thống hóa, So sánh tỷ lệ sử dụng và Trải nghiệm hoạt họa trực quan trước khi kết xuất video.
+         - Viz Method 1 (Chart.js Doughnut): Phân loại tỷ trọng 3 nhóm hiệu ứng chính (24 Nền & Ánh Sáng, 18 Tương Tác, 18 Chuyển Cảnh) giúp nhà sản xuất tối ưu hóa nhịp độ video.
+         - Viz Method 2 (CSS Live Previews): 60 hộp chuyển động tương tác độc lập sử dụng CSS Keyframes và một số sự kiện Micro-interaction.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Pure HTML/CSS and Chart.js Canvas only. -->
+
+    <style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #faf8f5; color: #2d2b2a; }
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+
+        /* 1. Neon Breathe */
+        .preview-neon {
+            border: 2px solid rgba(16, 185, 129, 0.15);
+            animation: neonBreathe 3s infinite ease-in-out;
+            background: #f0fdf4;
+        }
+        @keyframes neonBreathe {
+            0%, 100% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.1); }
+            50% { border-color: rgba(16, 185, 129, 1); box-shadow: 0 0 16px rgba(16, 185, 129, 0.4), inset 0 0 8px rgba(16, 185, 129, 0.15); }
+        }
+
+        /* 2. Stagger Elastic */
+        .preview-stagger-container { display: flex; gap: 8px; justify-content: center; align-items: center; height: 100%; }
+        .preview-stagger-item { width: 14px; height: 14px; background: #0284c7; border-radius: 50%; animation: staggerBounce 1.5s infinite; }
+        .preview-stagger-item:nth-child(1) { animation-delay: 0s; }
+        .preview-stagger-item:nth-child(2) { animation-delay: 0.15s; }
+        .preview-stagger-item:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes staggerBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.1); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+        }
+
+        /* 3. RGB Split (Hover) */
+        .preview-rgb { font-size: 22px; font-weight: 900; letter-spacing: 2px; transition: all 0.1s; color: #1e293b; }
+        .preview-rgb-container:hover .preview-rgb { animation: rgbScream 0.4s infinite; }
+        @keyframes rgbScream {
+            0% { text-shadow: -2px 0 #ef4444, 2px 0 #06b6d4; transform: translateX(-1px); }
+            50% { text-shadow: 2px 0 #ef4444, -2px 0 #06b6d4; transform: translateX(1px); }
+            100% { text-shadow: -1px 0 #ef4444, 1px 0 #06b6d4; transform: translateX(0); }
+        }
+
+        /* 4. Glassmorphic Shimmer */
+        .preview-glass-bg { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); position: relative; }
+        .preview-glass {
+            position: absolute; inset: 10px; background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.4);
+            background-image: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 70%);
+            background-size: 200% 100%; animation: shimmerWave 3s infinite linear; border-radius: 8px;
+        }
+        @keyframes shimmerWave { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* 5. Shockwave (Click) */
+        .preview-shockwave-container { position: relative; overflow: hidden; background: #f1f5f9; cursor: pointer;}
+        .preview-shockwave-container.shocking { animation: flashInvert 0.4s ease-out; }
+        @keyframes flashInvert {
+            0% { filter: invert(0) hue-rotate(0deg); }
+            30% { filter: invert(0.85) hue-rotate(180deg); }
+            100% { filter: invert(0) hue-rotate(0deg); }
+        }
+
+        /* 6. Hologram Gradient */
+        .preview-hologram {
+            background: linear-gradient(135deg, #f43f5e, #a855f7, #06b6d4, #10b981);
+            background-size: 300% 300%;
+            animation: holoShift 6s ease infinite;
+        }
+        @keyframes holoShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* 7. Depth Blur */
+        .preview-blur-group { display: flex; gap: 8px; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        .preview-blur-item { width: 24px; height: 24px; background: #a855f7; border-radius: 4px; transition: all 0.3s; }
+        .preview-blur-group:hover .preview-blur-item { filter: blur(3px); opacity: 0.4; }
+        .preview-blur-group .preview-blur-item:hover { filter: blur(0); opacity: 1; transform: scale(1.2); z-index: 10; background: #c084fc; box-shadow: 0 0 12px #c084fc;}
+
+        /* 8. Radial Pulse */
+        .preview-pulse-dot { position: relative; width: 16px; height: 16px; background: #f59e0b; border-radius: 50%; }
+        .preview-pulse-dot::after {
+            content: ''; position: absolute; inset: -8px; border: 2px solid #f59e0b; border-radius: 50%;
+            animation: radialPulse 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes radialPulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+
+        /* 9. Skeleton */
+        .preview-skeleton {
+            width: 80%; height: 14px; border-radius: 4px;
+            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+            background-size: 400% 100%; animation: skeletonLoad 1.5s infinite linear;
+        }
+        @keyframes skeletonLoad { 0% { background-position: 100% 50%; } 100% { background-position: -100% 50%; } }
+
+        /* 10. Magnetic Snap */
+        .preview-magnetic {
+            padding: 8px 16px; background: #db2777; border-radius: 8px; font-weight: bold; cursor: pointer; color: white;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+        }
+        .preview-magnetic:hover { transform: scale(1.1) rotate(-3deg); box-shadow: 0 8px 16px rgba(219, 39, 119, 0.3); }
+
+        /* 11. Morphing Liquid */
+        .preview-liquid {
+            width: 55px; height: 55px; background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            animation: morphLiquid 4s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+        }
+        @keyframes morphLiquid {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 40% 60% 70% 30% / 50% 60% 40% 50%; transform: rotate(45deg); }
+        }
+
+        /* 12. Text Mask Sweep */
+        .preview-mask-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #1e293b; border-radius: 8px;}
+        .preview-mask-sweep {
+            font-size: 20px; font-weight: 800; text-transform: uppercase;
+            background: linear-gradient(90deg, #94a3b8 0%, #ffffff 25%, #ffffff 50%, #94a3b8 75%);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: textMaskSweep 2.5s infinite linear;
+        }
+        @keyframes textMaskSweep { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        /* 13. Retro Scanline CRT */
+        .preview-scanline-container { width: 100%; height: 100%; background: #000; overflow: hidden; position: relative; border-radius: 8px;}
+        .preview-scanline-grid {
+            position: absolute; inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+        }
+        .preview-scanline-bar {
+            position: absolute; width: 100%; height: 10px; background: rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); animation: scanlineMoving 4s linear infinite;
+        }
+        @keyframes scanlineMoving { 0% { top: -10px; } 100% { top: 110%; } }
+
+        /* 14. Gravitational Snap */
+        .preview-gravity-dot {
+            width: 14px; height: 14px; background: #6366f1; border-radius: 50%;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .preview-gravity-container:hover .preview-gravity-dot { transform: scale(1.6) translateY(4px); box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4); }
+
+        /* 15. Flip Card 3D */
+        .preview-flip-card { width: 100px; height: 60px; perspective: 600px; cursor: pointer; }
+        .preview-flip-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); transform-style: preserve-3d;
+        }
+        .preview-flip-card:hover .preview-flip-inner { transform: rotateY(180deg); }
+        .preview-flip-front, .preview-flip-back {
+            position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 11px; font-weight: bold;
+        }
+        .preview-flip-front { background: #cbd5e1; color: #1e293b; }
+        .preview-flip-back { background: #0f172a; color: #f8fafc; transform: rotateY(180deg); }
+
+        /* 16. Centrifugal Particle Dissolve */
+        .preview-dissolve-dot {
+            width: 10px; height: 10px; background: #ec4899; border-radius: 50%;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .preview-dissolve-container:hover .preview-dissolve-dot {
+            transform: scale(0.1); opacity: 0;
+            box-shadow: 12px 12px 0 rgba(236, 72, 153, 0.6), -12px -12px 0 rgba(236, 72, 153, 0.6), 12px -12px 0 rgba(236, 72, 153, 0.6), -12px 12px 0 rgba(236, 72, 153, 0.6);
+        }
+
+        /* 17. Chasing Laser */
+        .preview-laser-box {
+            position: relative; width: 100px; height: 60px; background: #faf8f5; border-radius: 8px; overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;
+        }
+        .preview-laser-beam {
+            position: absolute; inset: -20px; background: conic-gradient(from 0deg, transparent, #06b6d4, transparent);
+            animation: laserRevolve 3s linear infinite; pointer-events: none;
+        }
+        .preview-laser-inner {
+            position: absolute; inset: 2px; background: #ffffff; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #0891b2;
+        }
+        @keyframes laserRevolve { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 18. Ambient Backlight Glow */
+        .preview-backlight-container { position: relative; z-index: 1; }
+        .preview-backlight-spill {
+            position: absolute; inset: 15px; background: radial-gradient(circle, #f43f5e 0%, transparent 70%);
+            filter: blur(12px); opacity: 0.3; transition: opacity 0.3s; z-index: -1;
+        }
+        .preview-backlight-container:hover .preview-backlight-spill { opacity: 0.85; }
+
+        /* 19. Elastic Snap Array */
+        .preview-elastic-container { display: flex; gap: 6px; align-items: center; justify-content: center; height: 100%; }
+        .preview-elastic-dot { width: 10px; height: 10px; background: #10b981; border-radius: 50%; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .preview-elastic-container:hover .preview-elastic-dot { transform: scale(1.6); }
+        .preview-elastic-dot:nth-child(1) { transition-delay: 0s; }
+        .preview-elastic-dot:nth-child(2) { transition-delay: 0.08s; }
+        .preview-elastic-dot:nth-child(3) { transition-delay: 0.16s; }
+
+        /* 20. Infinite Glitch */
+        .preview-inf-glitch { font-size: 16px; font-weight: 800; color: #1e293b; position: relative; animation: textGlitchMove 3s infinite linear; }
+        @keyframes textGlitchMove {
+            0%, 95%, 100% { transform: skew(0deg); text-shadow: none; }
+            96% { transform: skew(10deg); text-shadow: 1px 0 #f43f5e, -1px 0 #06b6d4; }
+            97% { transform: skew(-8deg); text-shadow: -2px 0 #f43f5e, 2px 0 #06b6d4; }
+            98% { transform: skew(3deg); text-shadow: 1px 0 #f43f5e, -1px 0 #06b6d4; }
+            99% { transform: skew(-2deg); text-shadow: none; }
+        }
+
+        /* 21. Galaxy Vortex (Wow: Xoáy Sáng Vũ Trụ) */
+        .preview-vortex {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 30%, #ec4899 60%, #3b82f6, transparent);
+            animation: vortexSpin 4s linear infinite;
+        }
+        @keyframes vortexSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 22. Cyber Space Grid (Wow: Lưới Horizon Tron) */
+        .preview-tron-space {
+            width: 100px; height: 60px; background: #000; border-radius: 8px; position: relative; overflow: hidden; perspective: 40px;
+        }
+        .preview-tron-grid {
+            position: absolute; inset: -50px;
+            background-image: linear-gradient(rgba(6, 182, 212, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px);
+            background-size: 8px 8px; transform: rotateX(60deg); animation: gridScroll 2s linear infinite;
+        }
+        @keyframes gridScroll { 0% { background-position: 0 0; } 100% { background-position: 0 16px; } }
+
+        /* 23. Prismatic Light Leak (Wow: Rò Rỉ Ánh Sáng) */
+        .preview-light-leak {
+            width: 100px; height: 60px; background: #1e1b4b; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-leak-flare {
+            position: absolute; width: 80px; height: 80px; background: radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, transparent 80%);
+            filter: blur(10px); animation: leakMove 6s ease-in-out infinite alternate;
+        }
+        @keyframes leakMove { 0% { left: -20px; top: -20px; } 100% { left: 40px; top: 10px; } }
+
+        /* 24. Aurora Borealis Ribbon (Wow: Dải Cực Quang) */
+        .preview-aurora-curtain {
+            width: 100px; height: 60px; background: #020617; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-aurora-ribbon {
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #3b82f6 100%);
+            filter: blur(10px); opacity: 0.55; transform: skewX(-20deg) scaleY(1.5);
+            animation: auroraWave 5s ease-in-out infinite alternate;
+        }
+        @keyframes auroraWave { 0% { transform: skewX(-20deg) translateX(-20px); } 100% { transform: skewX(-10deg) translateX(20px); } }
+
+        /* 25. Ghost Trail (Wow: Đuôi Ảnh Ảo Trượt) */
+        .preview-trail-container { display: flex; align-items: center; justify-content: center; height: 100%; position: relative; }
+        .preview-trail-dot {
+            position: absolute; width: 14px; height: 14px; background: #8b5cf6; border-radius: 50%;
+            animation: trailMove 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .preview-trail-dot:nth-child(2) { animation-delay: 0.1s; opacity: 0.6; }
+        .preview-trail-dot:nth-child(3) { animation-delay: 0.2s; opacity: 0.3; }
+        @keyframes trailMove {
+            0% { transform: translateX(-40px); }
+            50% { transform: translateX(40px); }
+            100% { transform: translateX(-40px); }
+        }
+
+        /* 26. Holographic Foil Reflect (Wow: Phản Quang Phủ Bạc) */
+        .preview-foil-card {
+            width: 100px; height: 60px; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); border-radius: 8px; position: relative; overflow: hidden;
+            transition: transform 0.3s; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-foil-reflect {
+            position: absolute; inset: -40px; background: linear-gradient(45deg, transparent, rgba(236,72,153,0.4), rgba(56,189,248,0.4), transparent);
+            transform: translateX(-100%); transition: transform 0.5s ease;
+        }
+        .preview-foil-card:hover .preview-foil-reflect { transform: translateX(100%); }
+
+        /* 27. Gold Dust Stream (Wow: Luồng Bụi Vàng) */
+        .preview-dust-container {
+            width: 110px; height: 60px; background: #1c1917; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-dust-spark {
+            position: absolute; width: 3px; height: 3px; background: #fbbf24; border-radius: 50%;
+            box-shadow: 0 0 6px #fbbf24; animation: dustFly 3s linear infinite;
+        }
+        .preview-dust-spark:nth-child(1) { left: 10%; top: 20%; animation-delay: 0.2s; }
+        .preview-dust-spark:nth-child(2) { left: 30%; top: 70%; animation-delay: 1.1s; }
+        .preview-dust-spark:nth-child(3) { left: 60%; top: 40%; animation-delay: 2.1s; }
+        @keyframes dustFly { 0% { transform: translateY(10px) translateX(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-30px) translateX(20px); opacity: 0; } }
+
+        /* 28. Parallax Depth Tilt (Wow: Nghiêng 3D Parallax) */
+        .preview-parallax-card {
+            width: 100px; height: 60px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform-style: preserve-3d; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-parallax-inner {
+            width: 40px; height: 20px; background: #3b82f6; border-radius: 4px; transform: translateZ(10px);
+            transition: transform 0.3s; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        .preview-parallax-card:hover { transform: rotateX(15deg) rotateY(15deg); }
+
+        /* 29. Supernova Explosion (Wow: Vụ Nổ Siêu Tân Tinh) */
+        .preview-supernova-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center;}
+        .preview-supernova-spark {
+            position: absolute; width: 6px; height: 6px; background: #f43f5e; border-radius: 50%; opacity: 0;
+        }
+        .preview-supernova-container:hover .preview-supernova-spark { animation: novaSpike 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .preview-supernova-spark:nth-child(1) { transform: translate(-10px, -10px); }
+        .preview-supernova-spark:nth-child(2) { transform: translate(15px, -5px); }
+        .preview-supernova-spark:nth-child(3) { transform: translate(-5px, 15px); }
+        @keyframes novaSpike { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) scale(1.8); opacity: 0; } }
+
+        /* 30. Digital Matrix Rain (Wow: Mưa Mã Trận) */
+        .preview-matrix-container { width: 100px; height: 60px; background: #050505; border-radius: 8px; position: relative; overflow: hidden; }
+        .preview-matrix-column {
+            position: absolute; width: 2px; height: 100%;
+            background: linear-gradient(180deg, transparent, #10b981 70%, #fff 100%);
+            animation: matrixFall 2s infinite linear;
+        }
+        .preview-matrix-column:nth-child(1) { left: 20%; animation-duration: 1.5s; }
+        .preview-matrix-column:nth-child(2) { left: 50%; animation-duration: 2.2s; animation-delay: 0.5s; }
+        .preview-matrix-column:nth-child(3) { left: 80%; animation-duration: 1.8s; animation-delay: 0.9s; }
+        @keyframes matrixFall { 0% { transform: translateY(-110%); } 100% { transform: translateY(110%); } }
+
+        /* 31. Warp Speed Starfield (Wow: Đột Phá Vận Tốc) */
+        .preview-starfield { width: 100px; height: 60px; background: #030712; border-radius: 8px; position: relative; overflow: hidden; }
+        .preview-warp-star {
+            position: absolute; background: #fff; border-radius: 50%; top: 50%; left: 50%;
+            animation: warpFly 1.5s infinite ease-in;
+        }
+        .preview-warp-star:nth-child(1) { width: 1px; height: 20px; transform: translate(-50%, -50%) rotate(45deg); animation-delay: 0s; }
+        .preview-warp-star:nth-child(2) { width: 2px; height: 15px; transform: translate(-50%, -50%) rotate(-30deg); animation-delay: 0.4s; }
+        .preview-warp-star:nth-child(3) { width: 1px; height: 30px; transform: translate(-50%, -50%) rotate(90deg); animation-delay: 0.8s; }
+        @keyframes warpFly { 0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; } 100% { transform: translate(calc(-50% + var(--tw-translate-x, 20px)), calc(-50% + var(--tw-translate-y, 20px))) scale(2.5); opacity: 1; } }
+
+        /* 32. Anamorphic Lens Flare (Wow: Flare Thấu Kính) */
+        .preview-lens-container { width: 100px; height: 60px; background: #000; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .preview-lens-core { width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #06b6d4; }
+        .preview-lens-streak {
+            position: absolute; width: 120%; height: 1.5px; background: linear-gradient(90deg, transparent, #06b6d4, #fff, #06b6d4, transparent);
+            animation: streakSweep 4s ease-in-out infinite alternate;
+        }
+        @keyframes streakSweep { 0% { transform: scaleX(0.7) rotate(-3deg); opacity: 0.6; } 100% { transform: scaleX(1.1) rotate(3deg); opacity: 1; } }
+
+        /* 33. Page Curl Fold (Wow: Lật Trang Giấy Mềm) */
+        .preview-page-container { width: 100px; height: 60px; background: #cbd5e1; border-radius: 8px; position: relative; overflow: hidden; cursor: pointer; }
+        .preview-page-fold {
+            position: absolute; top: 0; right: 0; width: 0px; height: 0px;
+            background: linear-gradient(135deg, #fff 45%, #94a3b8 55%); border-bottom-left-radius: 8px;
+            box-shadow: -3px 3px 5px rgba(0,0,0,0.15); transition: all 0.4s ease-out;
+        }
+        .preview-page-container:hover .preview-page-fold { width: 35px; height: 35px; }
+
+        /* 34. Infrared Thermal Shifting (Wow: Nhiệt Hồng Ngoại) */
+        .preview-thermal {
+            width: 100px; height: 60px; border-radius: 8px;
+            background: radial-gradient(circle at 30% 30%, #ec4899 10%, #fbbf24 35%, #06b6d4 70%);
+            animation: thermalShift 5s ease-in-out infinite alternate;
+        }
+        @keyframes thermalShift { 0% { background-position: 0% 0%; } 100% { background-position: 100% 100%; } }
+
+        /* 35. Metallic Chrome Sweep (Wow: Phản Quang Chrome) */
+        .preview-chrome-card {
+            width: 100px; height: 60px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 25%, #475569 50%, #cbd5e1 75%, #fff 100%);
+            background-size: 200% auto; animation: chromeSweep 4s linear infinite;
+        }
+        @keyframes chromeSweep { 0% { background-position: 0% center; } 100% { background-position: -200% center; } }
+
+        /* 36. Split text slides (Wow: Cắt Chữ Đôi) */
+        .preview-split-text { position: relative; font-size: 14px; font-weight: 800; cursor: pointer;}
+        .preview-split-top, .preview-split-bottom { display: inline-block; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .preview-split-text:hover .preview-split-top { transform: translateY(-3px) skewX(-10deg); color: #ec4899; }
+        .preview-split-text:hover .preview-split-bottom { transform: translateY(3px) skewX(10deg); color: #06b6d4; }
+
+        /* 37. Magnetic Coordinates Grid (Wow: Lưới Tọa Độ Co Dãn) */
+        .preview-coordinate-grid {
+            width: 100px; height: 60px; background: #faf8f5; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
+            transition: all 0.3s; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-coordinate-dot { width: 6px; height: 6px; background: #64748b; border-radius: 50%; transition: transform 0.3s; }
+        .preview-coordinate-grid:hover .preview-coordinate-dot { transform: scale(1.6); background: #3b82f6; }
+
+        /* 38. Soft Shadow Lift (Wow: Bóng Đổ Lơ Lửng) */
+        .preview-lift-box {
+            width: 70px; height: 40px; background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+        }
+        .preview-lift-container:hover .preview-lift-box {
+            transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 39. Prismatic Hue Revolve (Wow: Lăng Kính Chuyển Sắc) */
+        .preview-prism {
+            width: 100px; height: 60px; border-radius: 8px;
+            background: linear-gradient(0deg, #ec4899, #3b82f6);
+            animation: prismRotate 6s linear infinite;
+        }
+        @keyframes prismRotate { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
+        /* 40. Fluid Squeeze Elasticity (Wow: Đàn Hồi Ép Mềm) */
+        .preview-squeeze {
+            width: 40px; height: 40px; background: #f43f5e; border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .preview-squeeze-container:hover .preview-squeeze {
+            transform: scaleX(1.4) scaleY(0.7);
+        }
+
+        /* 41. Radar Scanner Sweep (New: Quét tia Radar) */
+        .preview-radar-box {
+            width: 100px; height: 60px; background: #022c22; border-radius: 8px; position: relative; overflow: hidden;
+            border: 1.5px solid #059669;
+        }
+        .preview-radar-sweep {
+            position: absolute; inset: -40px; background: conic-gradient(from 0deg, transparent 50%, rgba(16, 185, 129, 0.4) 100%);
+            animation: radarRotate 2.5s linear infinite; pointer-events: none;
+        }
+        @keyframes radarRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 42. Wave Spill / Bouncing Liquid Fill (New: Nước chảy tràn viền) */
+        .preview-wave-container {
+            width: 100px; height: 60px; background: #f1f5f9; border-radius: 8px; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-wave-water {
+            position: absolute; width: 200%; height: 200%; top: 40%; left: -50%; background: rgba(14, 165, 233, 0.7);
+            border-radius: 38%; animation: waveFlow 4s linear infinite;
+        }
+        @keyframes waveFlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 43. VHS Tape Noise Glitch (New: Sọc nhiễu VHS) */
+        .preview-vhs-screen {
+            width: 100px; height: 60px; background: #111; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-vhs-noise {
+            position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 1px, transparent 1px, transparent 2px);
+            animation: vhsStatic 0.15s infinite;
+        }
+        @keyframes vhsStatic { 0% { background-position: 0 0; } 100% { background-position: 0 10px; } }
+
+        /* 44. Vortex Particle Attraction (New: Hút bụi ngân hà) */
+        .preview-vacuum-box {
+            width: 100px; height: 60px; background: #0b0f19; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .preview-vacuum-hole {
+            width: 12px; height: 12px; background: #a855f7; border-radius: 50%; box-shadow: 0 0 10px #a855f7;
+        }
+        .preview-vacuum-spark {
+            position: absolute; width: 2px; height: 2px; background: #38bdf8; border-radius: 50%;
+            animation: vacuumPull 1.5s infinite linear;
+        }
+        .preview-vacuum-spark:nth-child(2) { animation-delay: 0.5s; }
+        .preview-vacuum-spark:nth-child(3) { animation-delay: 1s; }
+        @keyframes vacuumPull {
+            0% { transform: rotate(0deg) translateX(40px) scale(1); opacity: 1; }
+            100% { transform: rotate(360deg) translateX(0px) scale(0.1); opacity: 0; }
+        }
+
+        /* 45. 3D Isometric Block Flip (New: Khối Rubik 3D) */
+        .preview-rubik-container { width: 100px; height: 60px; perspective: 400px; display: flex; align-items: center; justify-content: center; }
+        .preview-rubik-cube {
+            width: 25px; height: 25px; position: relative; transform-style: preserve-3d;
+            transform: rotateX(-20deg) rotateY(45deg); animation: rubikSpin 4s infinite linear;
+        }
+        .preview-rubik-face {
+            position: absolute; width: 25px; height: 25px; border: 1px solid #1e293b;
+        }
+        .preview-rubik-front  { transform: rotateY(0deg) translateZ(12.5px); background: rgba(16, 185, 129, 0.8); }
+        .preview-rubik-back   { transform: rotateY(180deg) translateZ(12.5px); background: rgba(56, 189, 248, 0.8); }
+        .preview-rubik-top    { transform: rotateX(90deg) translateZ(12.5px); background: rgba(236, 72, 153, 0.8); }
+        .preview-rubik-bottom { transform: rotateX(-90deg) translateZ(12.5px); background: rgba(245, 158, 11, 0.8); }
+        @keyframes rubikSpin {
+            0% { transform: rotateX(-20deg) rotateY(45deg); }
+            50% { transform: rotateX(160deg) rotateY(225deg); }
+            100% { transform: rotateX(340deg) rotateY(405deg); }
+        }
+
+        /* 46. Snow Drift Particle Fall (New: Mưa tuyết rơi rơi) */
+        .preview-snow-box {
+            width: 100px; height: 60px; background: #0f172a; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-snow-flake {
+            position: absolute; width: 3px; height: 3px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 4px #fff; animation: snowFalling 2s linear infinite;
+        }
+        .preview-snow-flake:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .preview-snow-flake:nth-child(2) { left: 50%; animation-delay: 0.6s; animation-duration: 2.5s; }
+        .preview-snow-flake:nth-child(3) { left: 80%; animation-delay: 1.2s; animation-duration: 1.8s; }
+        @keyframes snowFalling { 0% { top: -10%; transform: translateX(0); } 100% { top: 110%; transform: translateX(10px); } }
+
+        /* 47. Elastic Stack Slide In (New: Trượt nảy chồng khối) */
+        .preview-stack-box { width: 100px; height: 60px; position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .preview-stack-layer {
+            position: absolute; width: 60px; height: 30px; border-radius: 6px; border: 1.5px solid #475569;
+            background: rgba(248, 250, 252, 0.9); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .preview-stack-layer:nth-child(1) { transform: translate(-4px, -4px); z-index: 3; }
+        .preview-stack-layer:nth-child(2) { transform: translate(0, 0); z-index: 2; background: rgba(226, 232, 240, 0.8); }
+        .preview-stack-layer:nth-child(3) { transform: translate(4px, 4px); z-index: 1; background: rgba(203, 213, 225, 0.7); }
+        .preview-stack-box:hover .preview-stack-layer:nth-child(1) { transform: translate(-14px, -14px); }
+        .preview-stack-box:hover .preview-stack-layer:nth-child(3) { transform: translate(14px, 14px); }
+
+        /* 48. Lightning Stroke Aura (New: Viền sáng sấm sét) */
+        .preview-lightning-box {
+            width: 100px; height: 60px; background: #020617; border-radius: 8px; border: 2px solid transparent;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .preview-lightning-box:hover {
+            animation: lightningBurst 0.5s infinite linear;
+        }
+        @keyframes lightningBurst {
+            0%, 100% { border-color: transparent; box-shadow: none; }
+            50% { border-color: #38bdf8; box-shadow: 0 0 15px #38bdf8, inset 0 0 8px #38bdf8; }
+        }
+
+        /* 49. Liquid Ripple Distortion (New: Sóng chấn động lỏng) */
+        .preview-ripple-container { width: 100px; height: 60px; background: #faf8f5; border-radius: 8px; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        .preview-ripple-wave {
+            position: absolute; width: 6px; height: 6px; border: 2px solid #8b5cf6; border-radius: 50%; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5); opacity: 0;
+        }
+        .preview-ripple-container:hover .preview-ripple-wave {
+            animation: rippleExpand 1.5s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+        @keyframes rippleExpand {
+            0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(12); opacity: 0; }
+        }
+
+        /* 50. Rainbow Foil Iridescence (New: Phản quang cầu vồng mạ bạc) */
+        .preview-foil-rainbow {
+            width: 100px; height: 60px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #f43f5e, #eab308, #10b981, #06b6d4, #f43f5e);
+            background-size: 400% 100%; transition: background-position 0.6s ease;
+        }
+        .preview-foil-rainbow:hover {
+            background-position: 100% center;
+        }
+
+        /* 51. Mystic Particle Evaporation (New: Bốc hơi khói sương) */
+        .preview-steam-box {
+            width: 100px; height: 60px; background: #18181b; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-steam-puff {
+            position: absolute; width: 24px; height: 24px; background: rgba(255,255,255,0.08); border-radius: 50%; filter: blur(5px);
+            bottom: -10px; left: 40%; animation: steamRise 3s infinite linear;
+        }
+        .preview-steam-puff:nth-child(2) { left: 20%; animation-delay: 1s; animation-duration: 2.5s; }
+        .preview-steam-puff:nth-child(3) { left: 60%; animation-delay: 2s; animation-duration: 3.5s; }
+        @keyframes steamRise {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.6); opacity: 0; }
+        }
+
+        /* 52. Ink Splatter Fluid Bleed (New: Vết mực loang) */
+        .preview-ink-container {
+            width: 100px; height: 60px; background: #faf8f5; border-radius: 8px; border: 1px solid rgba(0,0,0,0.03);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .preview-ink-drop {
+            width: 15px; height: 15px; background: #111827; border-radius: 50%; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .preview-ink-container:hover .preview-ink-drop {
+            transform: scale(4); border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
+        }
+
+        /* 53. Fisheye Lens Distortion (New: Thấu kính hội tụ) */
+        .preview-lens-distortion {
+            width: 100px; height: 60px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05); position: relative;
+        }
+        .preview-lens-grid {
+            position: absolute; inset: 10px; border-radius: 50%; border: 1.5px solid #475569;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .preview-lens-distortion:hover .preview-lens-grid {
+            transform: scale(2.2); box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* 54. Audio Spectrum Bounce Bar (New: Sóng âm phổ dập dềnh) */
+        .preview-audio-container {
+            width: 100px; height: 60px; background: #0f172a; border-radius: 8px; display: flex; gap: 4px; align-items: flex-end; justify-content: center; padding: 10px;
+        }
+        .preview-audio-bar {
+            width: 4px; height: 10px; background: #38bdf8; border-radius: 2px;
+            animation: audioBounce 1s infinite alternate ease-in-out;
+        }
+        .preview-audio-bar:nth-child(1) { animation-delay: 0.1s; height: 25px; }
+        .preview-audio-bar:nth-child(2) { animation-delay: 0.3s; height: 15px; }
+        .preview-audio-bar:nth-child(3) { animation-delay: 0.5s; height: 35px; }
+        .preview-audio-bar:nth-child(4) { animation-delay: 0.2s; height: 20px; }
+        @keyframes audioBounce {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1.3); }
+        }
+
+        /* 55. Mechanical Spring Stretch Loop (New: Kéo dãn lò xo) */
+        .preview-spring-box {
+            width: 100px; height: 60px; background: #faf8f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(0,0,0,0.03); cursor: pointer;
+        }
+        .preview-spring-coils {
+            width: 30px; height: 15px; background: #dc2626; border-radius: 6px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        }
+        .preview-spring-box:hover .preview-spring-coils {
+            transform: scaleX(2.5) scaleY(0.6);
+        }
+
+        /* 56. Firefly Floating Glow Sparks (New: Đốm sáng đom đóm) */
+        .preview-firefly-box {
+            width: 100px; height: 60px; background: #111; border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .preview-firefly-spark {
+            position: absolute; width: 4px; height: 4px; background: #bef264; border-radius: 50%;
+            box-shadow: 0 0 8px #bef264; animation: fireflyMove 4s infinite ease-in-out alternate;
+        }
+        .preview-firefly-spark:nth-child(1) { left: 20%; top: 30%; animation-delay: 0.5s; }
+        .preview-firefly-spark:nth-child(2) { left: 70%; top: 60%; animation-delay: 1.5s; animation-duration: 5s; }
+        @keyframes fireflyMove {
+            0% { transform: translate(0, 0); opacity: 0.3; }
+            100% { transform: translate(25px, -15px); opacity: 1; }
+        }
+
+        /* 57. Shattered Glass Fragment Burst (New: Hiệu ứng gương vỡ) */
+        .preview-shatter-box {
+            width: 100px; height: 60px; background: #e2e8f0; border-radius: 8px; position: relative; overflow: hidden; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-shatter-part {
+            position: absolute; width: 40px; height: 25px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .preview-shatter-part:nth-child(1) { clip-path: polygon(0 0, 100% 0, 0 100%); transform: translate(0, 0); }
+        .preview-shatter-part:nth-child(2) { clip-path: polygon(100% 0, 100% 100%, 0 100%); transform: translate(0, 0); }
+        .preview-shatter-box:hover .preview-shatter-part:nth-child(1) { transform: translate(-10px, -10px) rotate(-10deg); }
+        .preview-shatter-box:hover .preview-shatter-part:nth-child(2) { transform: translate(10px, 10px) rotate(10deg); }
+
+        /* 58. Diagonal Satin Metallic Sweep (New: Ánh kim loại quét chéo) */
+        .preview-satin-card {
+            width: 100px; height: 60px; background: linear-gradient(135deg, #9a3412 0%, #431407 100%); border-radius: 8px; position: relative; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .preview-satin-sweep {
+            position: absolute; top: -100%; left: -100%; width: 300%; height: 300%;
+            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.15) 50%, transparent 55%);
+            transition: transform 0.6s ease;
+        }
+        .preview-satin-card:hover .preview-satin-sweep {
+            transform: translate(30%, 30%);
+        }
+
+        /* 59. Electro-magnetic Arc Spark (New: Tia sét điện từ trường) */
+        .preview-electric-box {
+            width: 100px; height: 60px; background: #090d16; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+        .preview-electric-arc {
+            position: absolute; inset: 4px; border-radius: 6px; border: 1.5px dashed transparent;
+        }
+        .preview-electric-box:hover .preview-electric-arc {
+            animation: electricFlash 0.2s infinite linear;
+        }
+        @keyframes electricFlash {
+            0%, 100% { border-color: transparent; box-shadow: none; }
+            50% { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+        }
+
+        /* 60. Vanish Portal Vortex (New: Thu nhỏ điểm biến mất) */
+        .preview-vanish-box {
+            width: 100px; height: 60px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer;
+        }
+        .preview-vanish-dot {
+            width: 25px; height: 25px; background: linear-gradient(135deg, #a855f7, #db2777); border-radius: 50%;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s;
+        }
+        .preview-vanish-box:hover .preview-vanish-dot {
+            transform: scale(0) rotate(180deg); opacity: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="w-full bg-white border-b border-stone-200 p-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Brand & Domain Logo (HTML/CSS Glassmorphic Concept) -->
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 p-[1.5px] shadow-md flex items-center justify-center">
+                    <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-black text-xl text-transparent bg-clip-text bg-gradient-to-br from-emerald-300 to-cyan-300">
+                        KZ
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-1.5 leading-none">
+                        KenvinZone <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono">HTML-CODE</span>
+                    </h1>
+                    <p class="text-xs text-stone-500 mt-1 font-mono">html-code.kenvinzone.com</p>
+                </div>
+            </div>
+            <div class="flex gap-2 bg-stone-100 p-1 rounded-lg border border-stone-200">
+                <button onclick="filterCategory('all')" class="filter-btn active px-4 py-2 text-xs font-bold rounded-md bg-emerald-600 text-white transition-all">Tất cả</button>
+                <button onclick="filterCategory('background')" class="filter-btn px-4 py-2 text-xs font-bold rounded-md text-stone-600 hover:text-stone-900 transition-colors">Nền & Ánh Sáng</button>
+                <button onclick="filterCategory('interactive')" class="filter-btn px-4 py-2 text-xs font-bold rounded-md text-stone-600 hover:text-stone-900 transition-colors">Tương tác</button>
+                <button onclick="filterCategory('transition')" class="filter-btn px-4 py-2 text-xs font-bold rounded-md text-stone-600 hover:text-stone-900 transition-colors">Chuyển cảnh</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Structure -->
+    <main class="flex-1 w-full max-w-7xl mx-auto p-6 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar / Analytics Section -->
+        <aside class="w-full lg:w-1/3 flex flex-col gap-6">
+            <div class="bg-white rounded-2xl p-6 border border-stone-200 shadow-sm">
+                <h2 class="text-lg font-bold text-stone-800 mb-2">Phân Tích Thống Kê Giao Diện</h2>
+                <p class="text-xs text-stone-500 mb-6 leading-relaxed">
+                    Giới thiệu phân tích: Biểu đồ tròn trực quan hóa tỷ lệ phân bổ của **60 Tokens Hoạt họa** (gồm 20 token nền móng, 20 token chuyển động cao cấp và 20 token đồ họa bổ sung). Nhóm <strong>Nền & Ánh Sáng</strong> chiếm tỷ trọng chính, hỗ trợ thiết kế bầu không khí Cinematic chuyên nghiệp cho các dự án video Hyper Frame kết xuất tự động.
+                </p>
+                <div class="chart-container">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-stone-50 to-stone-100/50 rounded-2xl p-6 border border-stone-200">
+                <div class="text-2xl mb-3">💡</div>
+                <h3 class="font-bold text-stone-700 text-sm mb-2">Ý Nghĩa Chuyển Động Hyper Frame</h3>
+                <p class="text-xs text-stone-500 leading-relaxed text-justify">
+                    Hệ thống 60 Design Tokens toàn diện này giúp bạn kiểm chứng nhịp độ chuyển dịch hình ảnh trước khi render. Hãy chọn và sao chép trực tiếp mã định danh tiếng Anh (Prompt Token) để ra lệnh cho các nền tảng tự động hóa render video khớp nhịp âm thanh thính giác điện ảnh nhất.
+                </p>
+            </div>
+        </aside>
+
+        <!-- Main Content: Tokens Grid -->
+        <section class="w-full lg:w-2/3">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-stone-800">Thư Viện 60 Design Tokens Hoàn Chỉnh</h2>
+                <p class="text-sm text-stone-500">Giới thiệu danh sách: Trải nghiệm tương tác trực tiếp với các khối hiệu ứng CSS nguyên bản giúp bạn kiểm nghiệm nhịp độ (Pacing) trước khi áp dụng vào video thực tế.</p>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="tokensGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Cards will be injected here via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full border-t border-stone-200 py-6 mt-8 text-center text-xs text-stone-500">
+        <p>Hệ thống trích xuất và lưu trữ Design Tokens chuyên sâu v6.5 Stable - kenvinzone.com</p>
+    </footer>
+
+    <!-- Unified JavaScript Logic -->
+    <script>
+        // 1. Data Storage: Extracted & Expanded to 60 Beautiful Cinematic Tokens
+        const tokensData = [
+            {
+                id: 1,
+                nameVi: "Thở phát sáng Neon",
+                nameEn: "Breathing Neon Border Glow",
+                desc: "Đường viền tỏa ánh sáng Neon mờ ảo, tự động co dãn (breathe) cường độ sáng tuần hoàn mượt mà.",
+                cssLogic: "box-shadow + inset box-shadow + @keyframes",
+                category: "background",
+                previewHTML: `<div class="w-full h-full rounded-xl preview-neon flex items-center justify-center"><span class="text-emerald-600 font-bold text-xs uppercase tracking-wider">Neon</span></div>`
+            },
+            {
+                id: 2,
+                nameVi: "Trượt nảy đàn hồi",
+                nameEn: "Stagger Elastic Transition",
+                desc: "Các phần tử nối đuôi nhau xuất hiện so le với hiệu ứng nảy nhẹ (độ đàn hồi vật lý) ở điểm cuối.",
+                cssLogic: "cubic-bezier(0.34, 1.56, 0.64, 1) + delay",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-100 rounded-xl preview-stagger-container">
+                                <div class="preview-stagger-item"></div><div class="preview-stagger-item"></div><div class="preview-stagger-item"></div>
+                              </div>`
+            },
+            {
+                id: 3,
+                nameVi: "Rung nhòe RGB",
+                nameEn: "Chromatic Aberration / RGB Split",
+                desc: "Chữ bị rung lắc và tách dải màu đỏ/lam cực nhanh trong tích tắc để tạo điểm nhấn giật gân (Hover thử).",
+                cssLogic: "text-shadow (-2px 0 red, 2px 0 blue)",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl preview-rgb-container flex items-center justify-center border border-stone-200">
+                                <span class="preview-rgb">GLITCH</span>
+                              </div>`
+            },
+            {
+                id: 4,
+                nameVi: "Phủ kính & quét sáng",
+                nameEn: "Glassmorphic Shimmer Wave",
+                desc: "Bề mặt mờ giả lập chất liệu kính có một dải sáng chéo mượt mà quét liên tục từ trái qua phải.",
+                cssLogic: "backdrop-filter: blur() + linear-gradient",
+                category: "background",
+                previewHTML: `<div class="w-full h-full rounded-xl preview-glass-bg overflow-hidden"><div class="preview-glass flex items-center justify-center text-stone-700 text-xs font-bold drop-shadow-md">Glass</div></div>`
+            },
+            {
+                id: 5,
+                nameVi: "Sóng xung kích đảo màu",
+                nameEn: "Chromatic Shockwave Transition",
+                desc: "Toàn bộ khối nháy sáng và đảo ngược sắc độ âm bản cực nhanh (Click vào box để xem).",
+                cssLogic: "filter: invert(1) hue-rotate(180deg)",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full rounded-xl preview-shockwave-container flex items-center justify-center border border-stone-200" onclick="triggerShockwave(this)">
+                                <span class="text-stone-500 text-xs font-bold pointer-events-none">CLICK ME</span>
+                              </div>`
+            },
+            {
+                id: 6,
+                nameVi: "Sắc phổ Hologram",
+                nameEn: "Iridescent Gradient Shift",
+                desc: "Nền màu gradient đa sắc di chuyển vị trí chậm rãi, tạo cảm giác phản quang hologram đổi màu.",
+                cssLogic: "background-size: 400% + bg-position",
+                category: "background",
+                previewHTML: `<div class="w-full h-full rounded-xl preview-hologram flex items-center justify-center shadow-sm"><span class="text-white font-bold text-xs uppercase drop-shadow-md">Holo</span></div>`
+            },
+            {
+                id: 7,
+                nameVi: "Làm mờ tiêu cự (Hover)",
+                nameEn: "Depth-of-Field Blur Reveal",
+                desc: "Khi một khối được chọn, khối xung quanh bị làm mờ nhẹ và giảm tương phản (Hover vào các ô vuông).",
+                cssLogic: "filter: blur() + opacity on sibling",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl preview-blur-group border border-stone-200">
+                                <div class="preview-blur-item"></div><div class="preview-blur-item"></div><div class="preview-blur-item"></div>
+                              </div>`
+            },
+            {
+                id: 8,
+                nameVi: "Xung sáng Radial",
+                nameEn: "Radial Pulse Aura",
+                desc: "Từ một điểm phát ra các vòng tròn sóng sáng lan tỏa rộng dần ra xung quanh rồi mờ dần đi.",
+                cssLogic: "transform: scale() + opacity (::after)",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center">
+                                <div class="preview-pulse-dot"></div>
+                              </div>`
+            },
+            {
+                id: 9,
+                nameVi: "Sóng quét khung xương",
+                nameEn: "Skeleton Shimmer Loading",
+                desc: "Dải xám chuyển động mượt mà luân phiên giả lập trạng thái chờ tải dữ liệu chuyên nghiệp.",
+                cssLogic: "linear-gradient(90deg, x, y) moving",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex flex-col gap-2 p-4 justify-center">
+                                <div class="preview-skeleton"></div>
+                                <div class="preview-skeleton" style="width: 50%;"></div>
+                              </div>`
+            },
+            {
+                id: 10,
+                nameVi: "Tương tác hút nam châm",
+                nameEn: "Micro-interaction Magnetic",
+                desc: "Khi di chuột vào khối, khối co dãn vật lý và nghiêng nhẹ theo góc tạo phản hồi chân thực (Hover thử).",
+                cssLogic: "transform: scale(1.05) rotate(-3deg)",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center">
+                                <div class="preview-magnetic text-xs shadow-sm">Hover</div>
+                              </div>`
+            },
+            {
+                id: 11,
+                nameVi: "Gợn sóng Chất lỏng",
+                nameEn: "Morphing Liquid Wave Glow",
+                desc: "Khối chuyển động gợn sóng chất lỏng tự nhiên kết hợp biến đổi góc xoay, tạo ảo ảnh điện ảnh chân thực.",
+                cssLogic: "border-radius morphing + transform rotate",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-liquid"></div>
+                              </div>`
+            },
+            {
+                id: 12,
+                nameVi: "Mặt nạ quét điện ảnh",
+                nameEn: "Cinematic Text Mask Sweep",
+                desc: "Chữ sử dụng mặt nạ clipping rỗng, kết hợp dải gradient màu sáng quét luân hồi tạo cảm giác phát sóng TV.",
+                cssLogic: "background-clip: text + linear-gradient dynamic",
+                category: "transition",
+                previewHTML: `<div class="preview-mask-container"><div class="preview-mask-sweep">Hyper Frame</div></div>`
+            },
+            {
+                id: 13,
+                nameVi: "Sọc quét CRT cổ điển",
+                nameEn: "Retro Scanline CRT Glitch",
+                desc: "Ánh sáng giả lập màn hình tivi CRT cũ với tia quét ngang liên tục và nhiễu sóng nhẹ tinh tế.",
+                cssLogic: "repeating-gradient + animation linear moving",
+                category: "background",
+                previewHTML: `<div class="preview-scanline-container">
+                                <div class="preview-scanline-grid"></div>
+                                <div class="preview-scanline-bar"></div>
+                              </div>`
+            },
+            {
+                id: 14,
+                nameVi: "Hút trọng lực nam châm",
+                nameEn: "Gravitational Snap proximity",
+                desc: "Phản hồi vi mô tự động phóng to và rơi kéo dãn theo lò xo vật lý khi tiếp cận (Hover thử).",
+                cssLogic: "transform: scale() translateY() elastic",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center preview-gravity-container">
+                                <div class="preview-gravity-dot"></div>
+                              </div>`
+            },
+            {
+                id: 15,
+                nameVi: "Lật thẻ 3D trực giao",
+                nameEn: "3D Orthographic Card Flip",
+                desc: "Lật xoay thẻ trong trục không gian 3D mượt mà không bị vỡ bố cục phẳng nhờ tính trực giao (Hover thử).",
+                cssLogic: "perspective + preserve-3d + backface-visibility",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-flip-card">
+                                    <div class="preview-flip-inner">
+                                        <div class="preview-flip-front">Mặt Trước</div>
+                                        <div class="preview-flip-back">Mặt Sau</div>
+                                    </div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 16,
+                nameVi: "Phân rã hạt ly tâm",
+                nameEn: "Centrifugal Particle Dissolve",
+                desc: "Khối tròn biến mất đồng thời phân tách thành các hạt nhỏ bắn ra 4 góc khi tiếp cận (Hover thử).",
+                cssLogic: "box-shadow explode + scale(0.1) ease-out",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center preview-dissolve-container">
+                                <div class="preview-dissolve-dot"></div>
+                              </div>`
+            },
+            {
+                id: 17,
+                nameVi: "Tia Laser chạy dọc viền",
+                nameEn: "Chasing Laser Border Flow",
+                desc: "Một luồng sáng tia laser cực hẹp chuyển động bo góc xoay quanh chu vi thẻ, thích hợp tạo tiêu điểm thu hút.",
+                cssLogic: "conic-gradient revolving + mask inner block",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-laser-box">
+                                    <div class="preview-laser-beam"></div>
+                                    <div class="preview-laser-inner">Chasing...</div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 18,
+                nameVi: "Ánh sáng tràn nền biên",
+                nameEn: "Ambient Backlight Glow Spill",
+                desc: "Luồng ánh sáng màu loang mờ ảo tỏa ra tự nhiên phía sau khối tạo độ nổi khối tuyệt vời (Hover thử).",
+                cssLogic: "radial-gradient spill + filter: blur(12px)",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center preview-backlight-container">
+                                <div class="preview-backlight-spill"></div>
+                                <span class="text-xs font-bold text-stone-700">Blooming</span>
+                              </div>`
+            },
+            {
+                id: 19,
+                nameVi: "Nẩy đẩy lò xo chuỗi",
+                nameEn: "Elastic Snap Stagger Array",
+                desc: "Mảng chuỗi nhiều điểm tròn đàn hồi phản hồi nẩy nối đuôi nhau có độ giãn lò xo vật lý (Hover thử).",
+                cssLogic: "transform scale dynamic + transition-delay chain",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center">
+                                <div class="preview-elastic-container">
+                                    <div class="preview-elastic-dot"></div><div class="preview-elastic-dot"></div><div class="preview-elastic-dot"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 20,
+                nameVi: "Nhiễu tự động lặp vô hạn",
+                nameEn: "Infinite Auto Glitch Shift",
+                desc: "Chữ tự động nhảy xiên góc skew và tách viền đỏ/lam lặp lại cực nhanh vô hạn ở cuối chu kỳ.",
+                cssLogic: "skew() displacement + color border keyframes",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <span class="preview-inf-glitch">INFINITE</span>
+                              </div>`
+            },
+            // --- 20 ADVANCED CINEMATIC TOKENS FOR V6.5 EXTRA ---
+            {
+                id: 21,
+                nameVi: "Xoáy sáng Thiên hà",
+                nameEn: "Vortex Aura Revolve",
+                desc: "Luồng xoáy ánh sáng Gradient đa sắc dạng hình học vô cực, xoay tròn mềm mại tạo lực hút thị giác cao.",
+                cssLogic: "conic-gradient + keyframes spin",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-900 border border-stone-200 rounded-xl flex items-center justify-center overflow-hidden">
+                                <div class="preview-vortex"></div>
+                              </div>`
+            },
+            {
+                id: 22,
+                nameVi: "Lưới không gian Cyberpunk",
+                nameEn: "Cyber Space Perspective Grid",
+                desc: "Lưới không gian ba chiều chuyển động trượt sâu vô hạn, giả lập không gian số Tron cổ điển.",
+                cssLogic: "perspective + rotateX + background-position vertical slide",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-tron-space">
+                                    <div class="preview-tron-grid"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 23,
+                nameVi: "Rò rỉ ánh sáng lăng kính",
+                nameEn: "Prismatic Film Light Leak",
+                desc: "Dải màu rò rỉ ánh sáng mềm loang mờ nhòe dịch chuyển ngẫu nhiên, mô phỏng thước phim nhựa cũ.",
+                cssLogic: "radial-gradient + filter blur + keyframe organic shift",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-light-leak">
+                                    <div class="preview-leak-flare"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 24,
+                nameVi: "Dải cực quang Cận cực",
+                nameEn: "Aurora Borealis Curtain Wave",
+                desc: "Sóng ánh sáng mượt loang lướt qua màn hình như cực quang, mang dải màu xanh ngọc ảo diệu.",
+                cssLogic: "linear-gradient + filter blur + skew scale movement",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-aurora-curtain">
+                                    <div class="preview-aurora-ribbon"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 25,
+                nameVi: "Đuôi ảnh ảo kéo dài",
+                nameEn: "Fading Ghost Trail Slide",
+                desc: "Hiệu ứng trượt ngang để lại một loạt đuôi bóng mờ nhạt dần vật lý cực kỳ ấn tượng.",
+                cssLogic: "position absolute stagger Delay translation",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl overflow-hidden">
+                                <div class="preview-trail-container">
+                                    <div class="preview-trail-dot"></div>
+                                    <div class="preview-trail-dot"></div>
+                                    <div class="preview-trail-dot"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 26,
+                nameVi: "Thẻ phản quang phủ bạc",
+                nameEn: "Holographic Foil Card Reflect",
+                desc: "Mặt thẻ mạ bạc tự động ánh lên dải cầu vồng phản chiếu óng ánh khi tương tác (Hover thử).",
+                cssLogic: "hover linear-gradient gradient transition translateX",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full rounded-xl flex items-center justify-center bg-stone-50">
+                                <div class="preview-foil-card">
+                                    <div class="preview-foil-reflect"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 27,
+                nameVi: "Luồng bụi vàng lấp lánh",
+                nameEn: "Gold Dust Spark Stream",
+                desc: "Các hạt tinh thể vàng phát sáng chuyển động xoáy bay lên từ góc mờ nhạt rồi phân rã.",
+                cssLogic: "absolute particle scale keyframes + shadow glow",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-dust-container">
+                                    <div class="preview-dust-spark"></div>
+                                    <div class="preview-dust-spark"></div>
+                                    <div class="preview-dust-spark"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 28,
+                nameVi: "Nghiêng 3D Parallax",
+                nameEn: "3D Depth Parallax Tilt",
+                desc: "Mặt thẻ xoay chuyển góc khối 3D theo con trỏ kết hợp phần tử bên trong trượt nổi lên (Hover thử).",
+                cssLogic: "preserve-3d + translateZ + rotate hover transition",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-parallax-card">
+                                    <div class="preview-parallax-inner"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 29,
+                nameVi: "Vụ nổ siêu tân tinh",
+                nameEn: "Supernova Spark Explosion",
+                desc: "Click hoặc Hover tạo vụ nổ tia sáng nở rộ lan tỏa từ một tâm điểm rồi biến mất nhanh chóng (Hover thử).",
+                cssLogic: "absolute child translation scale cubic-bezier",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl preview-supernova-container">
+                                <div class="preview-supernova-spark" style="--tw-translate-x: -25px; --tw-translate-y: -15px;"></div>
+                                <div class="preview-supernova-spark" style="--tw-translate-x: 25px; --tw-translate-y: 20px;"></div>
+                                <div class="preview-supernova-spark" style="--tw-translate-x: -5px; --tw-translate-y: -30px;"></div>
+                                <span class="text-xs font-bold text-stone-500">Spark</span>
+                              </div>`
+            },
+            {
+                id: 30,
+                nameVi: "Mưa mã trận kĩ thuật số",
+                nameEn: "Digital Matrix Rain Fall",
+                desc: "Các chuỗi mã vạch lục bảo rơi thẳng đứng có vệt sáng dời đuôi huyền bí kiểu dòng phim Matrix.",
+                cssLogic: "linear-gradient vertical + animation linear endless delay",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-matrix-container">
+                                    <div class="preview-matrix-column"></div>
+                                    <div class="preview-matrix-column"></div>
+                                    <div class="preview-matrix-column"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 31,
+                nameVi: "Đột phá vận tốc",
+                nameEn: "Warp Speed Starfield Fly",
+                desc: "Hiệu ứng các vệt sao dãn dài phóng thẳng về phía người xem, giả lập bước nhảy không gian.",
+                cssLogic: "translate dynamic + scale warp keyframes",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-starfield">
+                                    <div class="preview-warp-star" style="--tw-translate-x: -30px; --tw-translate-y: -30px;"></div>
+                                    <div class="preview-warp-star" style="--tw-translate-x: 35px; --tw-translate-y: -25px;"></div>
+                                    <div class="preview-warp-star" style="--tw-translate-x: -10px; --tw-translate-y: 40px;"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 32,
+                nameVi: "Tia sáng thấu kính",
+                nameEn: "Anamorphic Blue Lens Flare",
+                desc: "Một tâm sáng rực rỡ tỏa dải sáng tia dẹt nằm ngang đổi góc nghiêng nhẹ cực kỳ điện ảnh.",
+                cssLogic: "box-shadow center glow + linear-gradient scale rotate sweep",
+                category: "background",
+                previewHTML: `<div class="w-full h-full flex items-center justify-center">
+                                <div class="preview-lens-container">
+                                    <div class="preview-lens-core"></div>
+                                    <div class="preview-lens-streak"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 33,
+                nameVi: "Lật trang giấy góc mềm",
+                nameEn: "Page Curl Corner Fold",
+                desc: "Góc giấy cuộn gập lật cong nếp chân thực khi rê chuột sát biên tạo trải nghiệm cơ học (Hover thử).",
+                cssLogic: "border-bottom-left-radius + linear-gradient page shift shadow",
+                category: "transition",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center">
+                                <div class="preview-page-container">
+                                    <div class="preview-page-fold"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 34,
+                nameVi: "Bản đồ nhiệt hồng ngoại",
+                nameEn: "Infrared Thermal Shifting",
+                desc: "Ánh sáng tỏa dịch chuyển luân hồi màu nhiệt học (Hồng, Vàng, Cyan) mượt mà lộng lẫy.",
+                cssLogic: "radial-gradient colors + bg-position shift alternate",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center overflow-hidden">
+                                <div class="preview-thermal"></div>
+                              </div>`
+            },
+            {
+                id: 35,
+                nameVi: "Phản quang Chrome kim loại",
+                nameEn: "Metallic Chrome Reflection Sweep",
+                desc: "Hiệu ứng mạ kim loại bạc sáng chói lướt qua phản quang óng ánh, tạo độ cao cấp vượt bậc.",
+                cssLogic: "linear-gradient chrome colors + keyframes background horizontal moving",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center overflow-hidden">
+                                <div class="preview-chrome-card"></div>
+                              </div>`
+            },
+            {
+                id: 36,
+                nameVi: "Cắt đôi chữ trượt",
+                nameEn: "Kinetic Split Text Slider",
+                desc: "Cắt dòng chữ thành hai nửa trên/dưới trượt lệch nhau một góc nghiêng cơ học thú vị (Hover thử).",
+                cssLogic: "inline-block split element transition skew translate",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center select-none">
+                                <div class="preview-split-text">
+                                    <span class="preview-split-top">HYPER</span><span class="preview-split-bottom">FRAME</span>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 37,
+                nameVi: "Lưới tọa độ co dãn",
+                nameEn: "Magnetic Coordinates grid",
+                desc: "Lưới ma trận các điểm tròn tự động dãn nở phóng đại khi trỏ tiếp cận tạo lực tương tác (Hover thử).",
+                cssLogic: "coordinate container dot scale background animation",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-coordinate-grid">
+                                    <div class="preview-coordinate-dot"></div><div class="preview-coordinate-dot"></div><div class="preview-coordinate-dot"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 38,
+                nameVi: "Bóng đổ lơ lửng",
+                nameEn: "Soft Shadow Lift Elevation",
+                desc: "Thao tác nâng nâng khối hộp lên cao mượt mà đồng thời bóng mờ đổ lùi dãn rộng cực sống động (Hover thử).",
+                cssLogic: "transform translateY + transition box-shadow depth blur",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center preview-lift-container">
+                                <div class="preview-lift-box"></div>
+                              </div>`
+            },
+            {
+                id: 39,
+                nameVi: "Lăng kính chuyển sắc",
+                nameEn: "Prismatic Hue Shift Revolve",
+                desc: "Tự động đổi màu dải quang phổ lăng kính vòng tuần hoàn vô hạn không ngừng nghỉ (Wow Factor).",
+                cssLogic: "hue-rotate linear loop infinite keyframes",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center overflow-hidden">
+                                <div class="preview-prism"></div>
+                              </div>`
+            },
+            {
+                id: 40,
+                nameVi: "Đàn hồi ép mềm",
+                nameEn: "Fluid Squeeze Elasticity",
+                desc: "Điểm tròn biến dạng dẹt đàn hồi tự nhiên như giọt nước rơi khi nhận tác động cơ học (Hover thử).",
+                cssLogic: "transform scaleX scaleY transition spring elastic-bezier",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 border border-stone-200 rounded-xl flex items-center justify-center preview-squeeze-container">
+                                <div class="preview-squeeze"></div>
+                              </div>`
+            },
+            // --- 20 EXTRA PROFESSIONAL & HIGHLY INTERACTIVE WEB ANIMATIONS (Tokens 41 - 60) ---
+            {
+                id: 41,
+                nameVi: "Quét tia Radar mờ ảo",
+                nameEn: "Radar Scanner Circular Sweep",
+                desc: "Bộ quét tròn xoay với dải sáng mờ gradient lục bảo, tự động lặp vô hạn giả lập màn hình giám sát kỹ thuật.",
+                cssLogic: "conic-gradient + keyframes rotate infinite",
+                category: "background",
+                previewHTML: `<div class="preview-radar-box"><div class="preview-radar-sweep"></div></div>`
+            },
+            {
+                id: 42,
+                nameVi: "Sóng nước dập dềnh",
+                nameEn: "Bouncing Liquid Wave Fill",
+                desc: "Lớp nước lỏng dao động dập dềnh không ngừng, tạo cảm giác mực nước dâng đầy cơ học sinh động.",
+                cssLogic: "border-radius rotation + transform rotate custom",
+                category: "background",
+                previewHTML: `<div class="preview-wave-container"><div class="preview-wave-water"></div></div>`
+            },
+            {
+                id: 43,
+                nameVi: "Nhiễu sọc ngang VHS",
+                nameEn: "VHS Tape Noise Glitch",
+                desc: "Màn hình nhiễu sọc analog CRT với dải sọc lướt nhanh liên tục, đậm chất retro điện ảnh cổ điển.",
+                cssLogic: "repeating-linear-gradient + vertical slide",
+                category: "background",
+                previewHTML: `<div class="preview-vhs-screen"><div class="preview-vhs-noise"></div></div>`
+            },
+            {
+                id: 44,
+                nameVi: "Hút bụi ngân hà ly tâm",
+                nameEn: "Vortex Particle Attraction",
+                desc: "Các hạt tinh thể chuyển động xoắn ốc bị hút gia tốc dần vào một tâm hố đen vũ trụ kỳ bí.",
+                cssLogic: "absolute particles + translate + scale spiral",
+                category: "transition",
+                previewHTML: `<div class="preview-vacuum-box">
+                                <div class="preview-vacuum-spark"></div>
+                                <div class="preview-vacuum-spark"></div>
+                                <div class="preview-vacuum-spark"></div>
+                                <div class="preview-vacuum-hole"></div>
+                              </div>`
+            },
+            {
+                id: 45,
+                nameVi: "Khối xoay Rubik 3D",
+                nameEn: "3D Isometric Block Flip",
+                desc: "Xoay lật đa chiều hộp khối 3D trong không gian trực giao lập thể cực kỳ nghệ thuật (Hover tự động đổi mặt).",
+                cssLogic: "preserve-3d + rotateX rotateY keyframes loop",
+                category: "transition",
+                previewHTML: `<div class="preview-rubik-container">
+                                <div class="preview-rubik-cube">
+                                    <div class="preview-rubik-face preview-rubik-front"></div>
+                                    <div class="preview-rubik-face preview-rubik-back"></div>
+                                    <div class="preview-rubik-face preview-rubik-top"></div>
+                                    <div class="preview-rubik-face preview-rubik-bottom"></div>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 46,
+                nameVi: "Mưa tuyết rơi rơi",
+                nameEn: "Snow Drift Particle Fall",
+                desc: "Các điểm tuyết rơi thẳng đứng với độ trễ ngẫu nhiên kết hợp lắc ngang tự nhiên vô hạn.",
+                cssLogic: "absolute translation keyframes + stagger duration",
+                category: "background",
+                previewHTML: `<div class="preview-snow-box">
+                                <div class="preview-snow-flake"></div>
+                                <div class="preview-snow-flake"></div>
+                                <div class="preview-snow-flake"></div>
+                              </div>`
+            },
+            {
+                id: 47,
+                nameVi: "Trượt nảy xếp chồng",
+                nameEn: "Elastic Stack Slide In",
+                desc: "Hệ thống 3 lớp thẻ xếp chồng co dãn và tịnh tiến bứt phá so le khi nhận tác động tương tác (Hover thử).",
+                cssLogic: "absolute layers + transform snap spring elastic",
+                category: "transition",
+                previewHTML: `<div class="preview-stack-box">
+                                <div class="preview-stack-layer"></div>
+                                <div class="preview-stack-layer"></div>
+                                <div class="preview-stack-layer"></div>
+                              </div>`
+            },
+            {
+                id: 48,
+                nameVi: "Viền sấm sét chớp nháy",
+                nameEn: "Lightning Stroke Aura",
+                desc: "Viền sáng điện từ nhấp nháy bùng nổ đột ngột với chu kỳ bất định, gây thu hút cực mạnh.",
+                cssLogic: "keyframes burst + stroke-color flash overlay",
+                category: "background",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-lightning-box">
+                                    <span class="text-xs font-bold text-stone-400">Spark</span>
+                                </div>
+                              </div>`
+            },
+            {
+                id: 49,
+                nameVi: "Sóng chấn động lỏng",
+                nameEn: "Liquid Ripple Distortion",
+                desc: "Sóng nước tỏa vòng tròn đồng tâm khuếch tán cực rộng từ tâm điểm khi có tương tác (Hover thử).",
+                cssLogic: "absolute scale expand + filter blur dynamic",
+                category: "interactive",
+                previewHTML: `<div class="preview-ripple-container">
+                                <div class="preview-ripple-wave"></div>
+                              </div>`
+            },
+            {
+                id: 50,
+                nameVi: "Cầu vồng bạc phản quang",
+                nameEn: "Rainbow Foil Iridescence Shift",
+                desc: "Lớp tráng gương phản chiếu quang phổ dải màu gradient cầu vồng lướt nhẹ khi di chuyển góc tương tác (Hover thử).",
+                cssLogic: "background-size 400% + transform shift hover speed",
+                category: "interactive",
+                previewHTML: `<div class="w-full h-full bg-stone-50 rounded-xl flex items-center justify-center">
+                                <div class="preview-foil-rainbow"></div>
+                              </div>`
+            },
+            {
+                id: 51,
+                nameVi: "Bốc hơi sương mờ",
+                nameEn: "Mystic Particle Evaporation",
+                desc: "Hiệu ứng khói mờ ảo trôi nổi bốc hơi tịnh tiến từ đáy hộp lên trên và tự phân rã mượt mà.",
+                cssLogic: "absolute translate Y + blur scale fading animation",
+                category: "background",
+                previewHTML: `<div class="preview-steam-box">
+                                <div class="preview-steam-puff"></div>
+                                <div class="preview-steam-puff"></div>
+                                <div class="preview-steam-puff"></div>
+                              </div>`
+            },
+            {
+                id: 52,
+                nameVi: "Mực loang hữu cơ",
+                nameEn: "Ink Splatter Fluid Bleed",
+                desc: "Điểm mực đen rơi tự động loang mở rộng biên độ không đồng đều đầy tính nghệ thuật (Hover thử).",
+                cssLogic: "border-radius morphing + scale scale ease-out",
+                category: "interactive",
+                previewHTML: `<div class="preview-ink-container">
+                                <div class="preview-ink-drop"></div>
+                              </div>`
+            },
+            {
+                id: 53,
+                nameVi: "Thấu kính hội tụ",
+                nameEn: "Fisheye Lens Distortion",
+                desc: "Hiệu ứng thấu kính quang học lồi tự động giãn to biên độ trung tâm cực kỳ hiện đại (Hover thử).",
+                cssLogic: "transform scale center rotate zoom-spring",
+                category: "interactive",
+                previewHTML: `<div class="preview-lens-distortion">
+                                <div class="preview-lens-grid"></div>
+                              </div>`
+            },
+            {
+                id: 54,
+                nameVi: "Âm phổ dập dềnh",
+                nameEn: "Audio Spectrum Bounce Bar",
+                desc: "Các cột sóng âm thanh dao động biên độ cao thấp luân hồi dập dềnh theo nhạc tính (Thích hợp video).",
+                cssLogic: "scaleY keyframes dynamic loop alternate",
+                category: "transition",
+                previewHTML: `<div class="preview-audio-container">
+                                <div class="preview-audio-bar"></div>
+                                <div class="preview-audio-bar"></div>
+                                <div class="preview-audio-bar"></div>
+                                <div class="preview-audio-bar"></div>
+                              </div>`
+            },
+            {
+                id: 55,
+                nameVi: "Lò xo kéo giãn",
+                nameEn: "Mechanical Spring Stretch Loop",
+                desc: "Chuyển động dãn dài trục X và bóp hẹp trục Y cơ học giả lập phản lực đàn hồi của lò xo (Hover thử).",
+                cssLogic: "scaleX transform + ease-elastic bezier loop",
+                category: "interactive",
+                previewHTML: `<div class="preview-spring-box">
+                                <div class="preview-spring-coils"></div>
+                              </div>`
+            },
+            {
+                id: 56,
+                nameVi: "Đóm đóm bay lập lòe",
+                nameEn: "Firefly Floating Glow Sparks",
+                desc: "Các đốm sáng dạ quang bay tự do lập lòe trong màn đêm với bóng mờ phát sáng huyền bí.",
+                cssLogic: "absolute translation speed + shadow glow moving",
+                category: "background",
+                previewHTML: `<div class="preview-firefly-box">
+                                <div class="preview-firefly-spark"></div>
+                                <div class="preview-firefly-spark"></div>
+                              </div>`
+            },
+            {
+                id: 57,
+                nameVi: "Gương vỡ tan mảnh",
+                nameEn: "Shattered Glass Fragment Burst",
+                desc: "Tấm kính phẳng tự động vỡ vụn làm 2 mảng xô lệch dời góc cơ học khi tương tác (Hover thử).",
+                cssLogic: "clip-path polygonal + translate rotate transition",
+                category: "transition",
+                previewHTML: `<div class="preview-shatter-box">
+                                <div class="preview-shatter-part"></div>
+                                <div class="preview-shatter-part"></div>
+                              </div>`
+            },
+            {
+                id: 58,
+                nameVi: "Ánh kim satin quét chéo",
+                nameEn: "Diagonal Satin Metallic Sweep",
+                desc: "Vệt sáng chéo mảnh phản chiếu ánh kim loại mịn lướt mượt dọc bề mặt tối cực kỳ cao cấp (Hover thử).",
+                cssLogic: "absolute light-sweep linear gradient translate hover transition",
+                category: "background",
+                previewHTML: `<div class="preview-satin-card"><div class="preview-satin-sweep"></div></div>`
+            },
+            {
+                id: 59,
+                nameVi: "Tia lửa điện trường",
+                nameEn: "Electro-magnetic Arc Spark",
+                desc: "Khung hộp viền phát ra các tia chớp điện lấp lánh chạy vòng quanh chu vi một cách hoang dại (Hover thử).",
+                cssLogic: "dashed border flash + shadow electro spark loop",
+                category: "background",
+                previewHTML: `<div class="preview-electric-box"><div class="preview-electric-arc"></div></div>`
+            },
+            {
+                id: 60,
+                nameVi: "Xoáy tụ biến mất",
+                nameEn: "Vanish Portal Vortex",
+                desc: "Điểm tròn biến dạng xoay lật 180 độ đồng thời thu hẹp kích thước biến mất cực kỳ độc đáo (Hover thử).",
+                cssLogic: "scale(0) rotate(180deg) cubic-bezier bounce",
+                category: "transition",
+                previewHTML: `<div class="preview-vanish-box"><div class="preview-vanish-dot"></div></div>`
+            }
+        ];
+
+        // 2. Render Logic
+        const grid = document.getElementById('tokensGrid');
+
+        function renderCards(data) {
+            grid.innerHTML = '';
+            data.forEach(token => {
+                const card = document.createElement('div');
+                card.className = `bg-white border border-stone-200 rounded-2xl overflow-hidden hover:border-cyan-500/50 hover:shadow-md transition-all group flex flex-col`;
+                
+                card.innerHTML = `
+                    <!-- CSS Live Preview Section -->
+                    <div class="h-28 w-full p-3 bg-stone-50/50 relative border-b border-stone-100 flex items-center justify-center">
+                        ${token.previewHTML}
+                        <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-[10px] text-stone-500 code-font border border-stone-200 backdrop-blur-sm">#${token.id}</div>
+                    </div>
+                    
+                    <!-- Content Section -->
+                    <div class="p-5 flex-1 flex flex-col">
+                        <div class="text-[10px] uppercase tracking-wider text-cyan-600 font-bold mb-1">${getCategoryName(token.category)}</div>
+                        <h3 class="text-base font-bold text-stone-800 leading-tight mb-1">${token.nameVi}</h3>
+                        <div class="text-xs text-stone-500 code-font mb-3 bg-stone-50 p-1.5 rounded truncate select-all group-hover:text-rose-600 transition-colors" title="Click để chọn copy">${token.nameEn}</div>
+                        <p class="text-xs text-stone-600 leading-relaxed mb-4 flex-1 line-clamp-3">${token.desc}</p>
+                        
+                        <!-- Core CSS Snippet -->
+                        <div class="mt-auto">
+                            <div class="text-[10px] text-stone-400 mb-1 font-semibold">Thuộc tính CSS cốt lõi:</div>
+                            <div class="text-[11px] text-emerald-700 code-font bg-emerald-50 border border-emerald-100 p-2 rounded">
+                                ${token.cssLogic}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Helper for Categories
+        function getCategoryName(cat) {
+            const map = {
+                'background': 'Nền & Ánh Sáng',
+                'interactive': 'Tương Tác',
+                'transition': 'Chuyển Cảnh'
+            };
+            return map[cat] || cat;
+        }
+
+        // Shockwave JS trigger
+        function triggerShockwave(el) {
+            el.classList.remove('shocking');
+            void el.offsetWidth; // trigger reflow
+            el.classList.add('shocking');
+        }
+
+        // 3. Functional Navigation / Filtering
+        function filterCategory(cat) {
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-4 py-2 text-xs font-bold rounded-md text-stone-600 hover:text-stone-900 transition-all";
+            });
+            event.target.className = "filter-btn active px-4 py-2 text-xs font-bold rounded-md bg-emerald-600 text-white transition-all";
+
+            // Filter data
+            if (cat === 'all') {
+                renderCards(tokensData);
+            } else {
+                const filtered = tokensData.filter(t => t.category === cat);
+                renderCards(filtered);
+            }
+        }
+
+        // 4. Initialize Data and Chart.js
+        window.onload = () => {
+            renderCards(tokensData);
+
+            // Setup Chart.js (Data Analytics from Source Report)
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            
+            // Count categories
+            const counts = { background: 0, interactive: 0, transition: 0 };
+            tokensData.forEach(t => counts[t.category]++);
+
+            Chart.defaults.color = '#78716c';
+            Chart.defaults.font.family = "'Be Vietnam Pro', sans-serif";
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nền & Ánh Sáng', 'Tương tác', 'Chuyển cảnh'],
+                    datasets: [{
+                        data: [counts.background, counts.interactive, counts.transition],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.85)', // Emerald
+                            'rgba(6, 182, 212, 0.85)',  // Cyan
+                            'rgba(244, 63, 94, 0.85)'   // Rose
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Ensures it respects parent container size
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1c1917',
+                            bodyColor: '#44403c',
+                            borderColor: 'rgba(231, 229, 228, 0.9)',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: true,
+                            shadowColor: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        };
+    </script>
+</body>
+</html>
